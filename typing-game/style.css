@@ -1,0 +1,30 @@
+/* inside style.css */
+.highlight {
+    background-color: yellow;
+  }
+  
+  .error {
+    background-color: lightcoral;
+    border: red;
+  }
+
+  h1 {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-align: center;
+    font-size: 48;
+  }
+
+  p {
+    text-align: center;
+    padding-top: 50;
+    font-size: 32;
+  }
+
+  div {
+    text-align: center;
+    font-size: 32;
+  }
+
+  body {
+    background-color: rgb(166, 205, 231);
+  }
