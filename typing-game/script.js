@@ -19,7 +19,14 @@ let startTime = Date.now();
 const quoteElement = document.getElementById('quote');
 const messageElement = document.getElementById('message');
 const typedValueElement = document.getElementById('typed-value');
+const modal = document.getElementById('myModal');
+const restartButton = document.getElementById('restartbtn');
+const endgameMessageElement = document.getElementById('endgamemsg');
 typedValueElement.style.display="none";
+
+restartButton.onclick =function () {
+  modal.style.display = "none";
+}
 
 // at the end of script.js
 document.getElementById('start').addEventListener('click', () => {
@@ -59,7 +66,8 @@ document.getElementById('start').addEventListener('click', () => {
         // Display success
         const elapsedTime = new Date().getTime() - startTime;
         const message = `CONGRATULATIONS! You finished in ${elapsedTime / 1000} seconds.`;
-        messageElement.innerText = message;
+        endgameMessageElement.innerText = message;
+        modal.style.display="block";
         removeEventListener('input', typedValueElement);
         typedValueElement.style.display="none";
       } else if (typedValue.endsWith(' ') && typedValue.trim() === currentWord) {
