@@ -22,13 +22,99 @@ const typedValueElement = document.getElementById('typed-value');
 const modal = document.getElementById('myModal');
 const restartButton = document.getElementById('restartbtn');
 const endgameMessageElement = document.getElementById('endgamemsg');
+const leaderboard = document.querySelectorAll('.highscores li');
 typedValueElement.style.display="none";
+const topScores = [0, 0, 0, 0, 0];
+var scoresShown = 0;
+const mapScores = new Map();
 
 restartButton.onclick =function () {
   modal.style.display = "none";
 }
 
-// at the end of script.js
+function updateLeaderboard() {
+  if (scoresShown == 0){
+    topScores.forEach((score, j) => {
+    leaderboard[j].textContent = score;
+    });
+  }
+  else {
+    for (let i=1; i <= scoresShown; i++){
+      mapScores.set(1, localStorage.getItem("First"));
+      mapScores.set(2, localStorage.getItem("Second"));
+      mapScores.set(3, localStorage.getItem("Third"));
+      mapScores.set(4, localStorage.getItem("Fourth"));
+      mapScores.set(5, localStorage.getItem("Fifth"));
+      topScores[i - 1] = mapScores.get(i);
+    }
+    topScores.forEach((score, j) => {
+    leaderboard[j].textContent = score;
+  });
+  }
+}
+
+function compareTime(newTime, timeCheck) {
+  console.log(timeCheck);
+  console.log(localStorage.getItem(timeCheck));
+  console.log(((localStorage.getItem(timeCheck) === null) || (localStorage.getItem(timeCheck) === 'null') || (newTime < (localStorage.getItem(timeCheck)))));
+  return ((localStorage.getItem(timeCheck) === null) || (localStorage.getItem(timeCheck) === 'null') || (newTime < (localStorage.getItem(timeCheck))));
+}
+
+
+function replaceTime(newTime) {
+  if (compareTime(newTime, "First")){
+      localStorage.setItem("Fifth", localStorage.getItem("Fourth"));
+      localStorage.setItem("Fourth", localStorage.getItem("Third"));
+      localStorage.setItem("Third", localStorage.getItem("Second"));
+      localStorage.setItem("Second", localStorage.getItem("First"));
+      localStorage.setItem("First", newTime);
+      console.log("c1");
+      if (scoresShown < 5) {
+        scoresShown += 1;
+      }
+      updateLeaderboard();
+  }
+  else if (compareTime(newTime, "Second")){
+      console.log("c2");
+      localStorage.setItem("Fifth", localStorage.getItem("Fourth"));
+      localStorage.setItem("Fourth", localStorage.getItem("Third"));
+      localStorage.setItem("Third", localStorage.getItem("Second"));
+      localStorage.setItem("Second", newTime);
+      if (scoresShown < 5) {
+        scoresShown += 1;
+      }
+      updateLeaderboard();
+  }
+  else if (compareTime(newTime, "Third")){
+      localStorage.setItem("Fifth", localStorage.getItem("Fourth"));
+      localStorage.setItem("Fourth", localStorage.getItem("Third"));
+      localStorage.setItem("Third", newTime);
+      if (scoresShown < 5) {
+        scoresShown += 1;
+      }
+      updateLeaderboard();
+  }
+  else if (compareTime(newTime, "Fourth")){
+      localStorage.setItem("Fifth", localStorage.getItem("Fourth"));
+      localStorage.setItem("Fourth", newTime);
+      if (scoresShown < 5) {
+        scoresShown += 1;
+      }
+      updateLeaderboard();
+  }
+  else if (compareTime(newTime, "Fifth")){
+      localStorage.setItem("Fifth", newTime);
+      if (scoresShown < 5) {
+        scoresShown += 1;
+      }
+      updateLeaderboard();
+  }
+}
+
+
+
+updateLeaderboard();
+
 document.getElementById('start').addEventListener('click', () => {
     // get a quote
     const quoteIndex = Math.floor(Math.random() * quotes.length);
@@ -64,8 +150,9 @@ document.getElementById('start').addEventListener('click', () => {
       if (typedValue === currentWord && wordIndex === words.length - 1) {
         // end of sentence
         // Display success
-        const elapsedTime = new Date().getTime() - startTime;
-        const message = `CONGRATULATIONS! You finished in ${elapsedTime / 1000} seconds.`;
+        const elapsedTime = ((new Date().getTime() - startTime) / 1000);
+        replaceTime(elapsedTime);
+        const message = `CONGRATULATIONS! You finished in ${elapsedTime} seconds.`;
         endgameMessageElement.innerText = message;
         modal.style.display="block";
         removeEventListener('input', typedValueElement);
@@ -95,4 +182,13 @@ document.getElementById('start').addEventListener('click', () => {
     startTime = new Date().getTime();
   });
 
+document.getElementById('quickend').addEventListener('click', () => {
+  const elapsedTime = ((new Date().getTime() - startTime) / 1000);
+  replaceTime(elapsedTime);
+  const message = `CONGRATULATIONS! You finished in ${elapsedTime} seconds.`;
+  endgameMessageElement.innerText = message;
+  modal.style.display="block";
+  removeEventListener('input', typedValueElement);
+  typedValueElement.style.display="none";
+});
   // at the end of script.js
