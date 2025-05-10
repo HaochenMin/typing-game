@@ -24,22 +24,24 @@ const restartButton = document.getElementById('restartbtn');
 const endgameMessageElement = document.getElementById('endgamemsg');
 const leaderboard = document.querySelectorAll('.highscores li');
 typedValueElement.style.display="none";
-const topScores = [0, 0, 0, 0, 0];
-var scoresShown = 0;
+const topScores = [0, 0, 0, 0, 0]; //Initializes leaderboard as all 0s
+var scoresShown = 0; //Tracker for how many scores have been recorded
 const mapScores = new Map();
 
+//Closes the modal that appears after a quote is completed
 restartButton.onclick =function () {
   modal.style.display = "none";
 }
 
+//Updates the leaderboard with new values
 function updateLeaderboard() {
-  if (scoresShown == 0){
+  if (scoresShown == 0){ //When there are no scores to be shown, do not update topscores with localstorage or it will replace to null
     topScores.forEach((score, j) => {
     leaderboard[j].textContent = score;
     });
   }
   else {
-    for (let i=1; i <= scoresShown; i++){
+    for (let i=1; i <= scoresShown; i++){ //When there is at least 1 score to be shown, replaces topScore elements with localstorage only if they are not null
       mapScores.set(1, localStorage.getItem("First"));
       mapScores.set(2, localStorage.getItem("Second"));
       mapScores.set(3, localStorage.getItem("Third"));
@@ -53,29 +55,24 @@ function updateLeaderboard() {
   }
 }
 
-function compareTime(newTime, timeCheck) {
-  console.log(timeCheck);
-  console.log(localStorage.getItem(timeCheck));
-  console.log(((localStorage.getItem(timeCheck) === null) || (localStorage.getItem(timeCheck) === 'null') || (newTime < (localStorage.getItem(timeCheck)))));
+function compareTime(newTime, timeCheck) {//Returns true if there is no value in that slot or it is faster than the time in that ranking
   return ((localStorage.getItem(timeCheck) === null) || (localStorage.getItem(timeCheck) === 'null') || (newTime < (localStorage.getItem(timeCheck))));
 }
 
 
-function replaceTime(newTime) {
+function replaceTime(newTime) { //Checks if the new time is faster than the time in the ranking and increments scoresShown if less than 5
   if (compareTime(newTime, "First")){
       localStorage.setItem("Fifth", localStorage.getItem("Fourth"));
       localStorage.setItem("Fourth", localStorage.getItem("Third"));
       localStorage.setItem("Third", localStorage.getItem("Second"));
       localStorage.setItem("Second", localStorage.getItem("First"));
       localStorage.setItem("First", newTime);
-      console.log("c1");
       if (scoresShown < 5) {
         scoresShown += 1;
       }
       updateLeaderboard();
   }
   else if (compareTime(newTime, "Second")){
-      console.log("c2");
       localStorage.setItem("Fifth", localStorage.getItem("Fourth"));
       localStorage.setItem("Fourth", localStorage.getItem("Third"));
       localStorage.setItem("Third", localStorage.getItem("Second"));
@@ -110,8 +107,6 @@ function replaceTime(newTime) {
       updateLeaderboard();
   }
 }
-
-
 
 updateLeaderboard();
 
@@ -182,6 +177,7 @@ document.getElementById('start').addEventListener('click', () => {
     startTime = new Date().getTime();
   });
 
+  //Button for testing to instantly end the current quote
 document.getElementById('quickend').addEventListener('click', () => {
   const elapsedTime = ((new Date().getTime() - startTime) / 1000);
   replaceTime(elapsedTime);
